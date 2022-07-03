@@ -1,4 +1,5 @@
 node_modules
-image/**
+images/accounts/**
 tmp_files/**
-!image/default.png
+!images/accounts/default.jpg
+!images/accounts/SCDev.jpg
