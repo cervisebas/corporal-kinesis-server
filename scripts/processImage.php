@@ -1,5 +1,22 @@
 <?php
+    include_once './libs/WideImage/WideImage.php';
+    
     class ProcessImageSystem {
+        public function process3($file, $w, $h) {
+            $tmpName = './tmp_files/tmp_'.random_int(11111111, 99999999).'.png';
+            WideImage::load($file)->resize($w, $h, 'outside', 'down')->saveToFile($tmpName);
+            $image = imagecreatefrompng($tmpName);
+            $this->image_fix_orientation($image, $file);
+            unlink($tmpName);
+            imagepng($image, $tmpName);
+            WideImage::load($tmpName)->crop('center', 'center', $w, $h)->saveToFile($tmpName);
+            $image = imagecreatefrompng($tmpName);
+            unlink($tmpName);
+            return $image;
+        }
+        function image_fix_orientation(&$image, $filename) {
+            $image = imagerotate($image, array_values([0, 0, 0, 180, 0, 0, -90, 0, 90])[@exif_read_data($filename)['Orientation'] ?: 0], 0);
+        }
         public function process($file, $fileName, $w, $h, $crop=FALSE) {
             list($width, $height) = getimagesize($file);
             $r = $width / $height;

@@ -81,16 +81,12 @@
                     usort($arrayData, function($a, $b) {
                         $date1 = base64_decode($a["date"]);
                         $date2 = base64_decode($b["date"]);
-                        
                         $e1 = explode("/", $date1);
                         $e2 = explode("/", $date2);
-
                         $date1_2 = $e1[0]."-".$e1[1]."-".$e1[2];
                         $date2_2 = $e2[0]."-".$e2[1]."-".$e2[2];
-
                         $time1 = strtotime($date1_2);
                         $time2 = strtotime($date2_2);
-
                         return $time1 - $time2;
                     });
                     return array('ok' => true, 'cause' => '', 'trainings' => $arrayData);

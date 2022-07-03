@@ -4,10 +4,17 @@
             $nameFile = $this->generateCode("account").pathinfo($image["name"], PATHINFO_EXTENSION);
             if (copy($image["tmp_name"], "./images/accounts/$nameFile")) return $nameFile; else return array('ok' => false, 'cause' => 'No se ha podido copiar el archivo de imagen.');
         }
-        public function createAccountImage($file) {
+        /*public function createAccountImage($file) {
             $ImgProcess = new ProcessImageSystem();
             $newName = 'account_'.random_int(11111111, 99999999).'.webp';
             $process = $ImgProcess->process($file['tmp_name'], $file['name'], 512, 512, true);
+            $copy = imagewebp($process, './images/accounts/'.$newName, 70);
+            return ($copy)? $newName: 'default.jpg';
+        }*/
+        public function createAccountImage($file) {
+            $ImgProcess = new ProcessImageSystem();
+            $newName = 'account_'.random_int(11111111, 99999999).'.webp';
+            $process = $ImgProcess->process3($file['tmp_name'], 512, 512);
             $copy = imagewebp($process, './images/accounts/'.$newName, 70);
             return ($copy)? $newName: 'default.jpg';
         }

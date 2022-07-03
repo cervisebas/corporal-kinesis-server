@@ -12,6 +12,8 @@
     //echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     include_once 'scripts/classes.php';
 
+    header('Content-type: application/json');
+
     $accounts = new AccountSystem();
     $permissions = new PermissionsSystem();
     $turns = new TurnsSystem();
