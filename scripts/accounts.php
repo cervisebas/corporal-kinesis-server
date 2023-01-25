@@ -135,6 +135,36 @@
                 return array('ok' => false, 'cause' => 'Ocurrió un error de parte del servidor.');
             }
         }
+        public function modify_admin($idDeclare, $idAccount, string $name, string $birthday, string $dni, string $phone) {
+            try {
+                $db = new DBSystem();
+
+                $permission = new PermissionsSystem();
+                $verifyAccount = $permission->verifyAccount($idDeclare, 3);
+                if (is_object($verifyAccount)) return $verifyAccount;
+                if (!$verifyAccount) return array('ok' => false, 'cause' => 'No posees los permisos suficientes para realizar esta acción.');
+
+                $verifyData = new VerifyData();
+                $fileSystem = new FileSystem();
+                $edit = "";
+                (!$verifyData->is_empty($name)) && $edit = $edit."`name`='$name'";
+                (!$verifyData->is_empty($dni)) && $edit = $edit.((strlen($edit) != 0)? ",": "")."`dni`='$dni'";
+                (!$verifyData->is_empty($phone)) && $edit = $edit.((strlen($edit) != 0)? ",": "")."`phone`='$phone'";
+                (!$verifyData->is_empty($birthday)) && $edit = $edit.((strlen($edit) != 0)? ",": "")."`birthday`='$birthday'";
+                if ($verifyData->issetFilePost('image')) {
+                    $image = base64_encode($fileSystem->createAccountImage($_FILES['image']));
+                    $edit = $edit.((strlen($edit) != 0)? ",": "")."`image`='$image'";
+                }
+                $consult = $db->Query("UPDATE `accounts` SET $edit WHERE `id`=$idAccount");
+                if ($consult) {
+                    return array('ok' => true, 'cause' => '');
+                } else {
+                    return array('ok' => false, 'cause' => 'Ocurrió un error al consultar la base de datos.');
+                }
+            } catch (\Throwable $th) {
+                return array('ok' => false, 'cause' => 'Ocurrió un error de parte del servidor.');
+            }
+        }
         public function getAccountInfo($idAccount) {
             try {
                 $db = new DBSystem();

@@ -154,6 +154,25 @@
         }
         return;
     }
+    if (isset($_POST['editUserAdmin'])) {
+        if ($verifyData->issetDataPost(array('email', 'password', 'idEdit')) && $verifyData->issetPosts(array('name', 'dni', 'birthday', 'phone'))) {
+            $accountId = $accounts->getIdUser($_POST['email'], $_POST['password']);
+            if (is_object($accountId)) {
+                echo json_encode($accountId);
+                return;
+            }
+            $edit = $accounts->modify_admin($accountId, $_POST['idEdit'], $_POST['name'], $_POST['birthday'], $_POST['dni'], $_POST['phone']);
+            echo json_encode($edit);
+            return;
+        } else {
+            $received = 0;
+            if (isset($_POST['email'])) $received += 1;
+            if (isset($_POST['password'])) $received += 1;
+            if (isset($_POST['idEdit'])) $received += 1;
+            echo json_encode(array('ok' => false, 'cause' => "Faltan datos a ingresar. ($received/3 recibidos)"));
+        }
+        return;
+    }
     if (isset($_POST['getInfoAccount'])) {
         if ($verifyData->issetDataPost(array('email', 'password'))) {
             $accountId = $accounts->getIdUser($_POST['email'], $_POST['password']);
